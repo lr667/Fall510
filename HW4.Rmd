@@ -1,0 +1,225 @@
+---
+title: "Homework 4 R"  
+output: html_document
+---
+1.
+a)
+```{r}
+c(1:20) #print a vector from 1 to 20, ie. 1,2,3,4,5,```19,20
+```
+
+b)
+
+```{r}
+c(20:1)  #print a vector from 20 to 1, that is, 20,19,18,```3,2,1
+```
+
+c)
+```{r}
+c(1:20,19:1)  
+#   First, print the vector from 1 to 20, then print the vector from 19 to 1.
+#   That is, 1,2,3,```19,20 then 19, 18,17,```3,2,1
+```
+
+d)
+```{r}
+tmp<-c(4,6,3)
+#   First assign a vector "tmp", and then give value to this vector:(4,6,3)
+```
+
+e)
+```{r}
+rep(tmp,t=10)  
+#   We want 4 occurs 10 times in the order of tmp vector, and this vector end in a 3, that is let the tmp(4,6,3) vector repeat 10 times.
+```
+
+f)
+```{r}
+c(rep(tmp,t=10),4)
+#   We want 4 occurs 11 times,6 occurs 10 times,3 occurs 10 times in the order of tmp vector, and this vector end in a 4.
+#   Let the tmp(4,6,3) vector repeat 10 times, and then add a 4.
+```
+
+g)
+```{r}
+rep(tmp, c(10,20,30))
+#  We want 4 repeat 10 times and then 6 repeat 20 times,and at last,3 repeat 30 times.
+#  Let the 4 in tmp repeat 10 times,6 repeat 20 times, and 3 reeat 30 times.
+```
+
+2.
+```{r}
+x<-seq(3,6,by=0.1)
+#  Give x a sequence of number from 3 to 6, and each one differs 0.1
+#  That is, x=3, 3.1, 3.2,`````, 5.9, 6.
+ans=exp(x)*cos(x)
+#  Define a function ans=exp(x)*cos(x), to get a sequence of answer when x=3, 3.1, 3.2 ```5.9, 6.
+#  print the sequence of answer
+ans
+```
+
+3.
+a)
+```{r}
+tmp<-seq(3,36,by=3) 
+#  Give a sequence of number from 3 to 36, and each of them differs 3. 
+#  Let the variable "tmp" be the sequence.
+tmp2<-seq(1,34,by=3)
+#  Give a sequence of number from 1 to 34, and each of them differs 3.
+#  Let the variable "tmp2" be the sequence.
+tmp<-0.1^tmp
+#  Let the varible be 0.1^tmp
+tmp2<-0.2^tmp2
+#  Let the varible be 0.2^tmp2
+ans<-tmp*tmp2
+#  Let answer be a sequence of the product of temp and temp2
+ans
+#  Print the vector as request.
+```
+
+b)
+```{r}
+tmp<-c(1:25)
+#  Define a sequence "tmp" be 1,2,3,```,25
+tmp2<-2^tmp
+#  Define a sequence "tmp2" be 2^tmp (every value respectively corresponding to the value in "tmp")
+ans<-tmp2/tmp
+#  Let answer be tmp2/tmp to get a new sequence.
+ans
+#  Print the vector as request.
+```
+
+4.
+a)
+```{r}
+len<-c(10:100) 
+#  Define a sequence from 10 to 100, and each one differs 1. (10,11,```99,100)
+value<-len^3+4*len^2
+#  Define a new sequence equal len^3+4*len^2, (every value respectively corresponding to the value in "len")
+ans<-sum(value)
+#  Calculate the sum of every value in sequence "value"
+ans
+#  Print the answer of calculation.
+```
+
+b)
+```{r}
+len<-c(1:25)
+#  Define a sequence from 1 to 25, and each one differs 1. (1,2,3,```24,25)
+value<-2^len/len+3^len/len^2
+#  Define a new sequence equal 2^len/len+3^len/len^2, (every value respectively corresponding to the value in "len")
+ans<-sum(value)
+#  Calculate the sum of every value in sequence "value"
+ans
+#  Print the answer of calculation.
+
+```
+
+5
+a)
+```{r}
+paste("label",c(1:30))
+#  Use default paste, sep=" ",to get a sequence of 'label x' where x=1,2,3```,30.
+
+```
+
+b)
+```{r}
+paste("fn",c(1:30),sep="")
+#  Use paste, but we define sep="" to eliminate the single space in default.
+#  To get a sequence of 'fnx' where x=1,2,3,```,30.
+```
+
+6
+```{r}
+set.seed(50)
+xVec<-sample(0:999,250,replace=T)
+yVec<-sample(0:999,250,replace=T)
+#  Define xVec and yVec as request. We create two vectors of random integers which are chosen with replacement from the integers 0,1,```,999. Both vectors have length 250.
+
+```
+a)
+```{r}
+c(yVec[2:250]-xVec[1:249])
+#  Define a new sequence: the nth value is [the (n+1)th value in yVec] minus [the nth value in xVec] where n=1,2,3,```249.
+#  Print this new sequence.
+```
+b)
+```{r}
+c(sin(yVec[1:249])/cos(xVec[2:250]))
+#  Define a new sequence: the nth value is [sin of the nth value in yVec] divide by [cos of the (n+1)th value in xVec] where n=1,2,3,```,249.
+#  Print this new sequence.
+```
+c)
+```{r}
+c(xVec[1:248]+2*xVec[2:249]-xVec[3:250])
+#  Define a new sequence: the nth value is [the nth value in xVec] plus doubled [the (n+1)th value in xVec] minus [the (n+2)th value in xVec] where n=1,2,3,```,248.
+#  Print this new sequence.
+```
+d)
+```{r}
+sum((exp(-xVec[2:250]))/(xVec[1:249]+10))
+#  Define a new sequence: the nth value is exp(-[the (n+1)th value in xVec]) divide by [the nth value in xVec plus 10] where n=1,2,3,```,249.
+#  Calculate the sum of this new sequence.
+```
+7
+a)
+```{r}
+yVec[yVec>600]
+#  Print every value in yVec that are >600.
+```
+b)
+```{r}
+c(1:250)[yVec>600]
+#  Print the ndex position of every value in yVec that are >600.
+```
+c)
+```{r}
+xVec[yVec>600]
+#  Print the values in xVec whose index position is the same as the values which are   > 600 in yVec.
+```
+d)
+```{r}
+(abs(xVec-mean(xVec)))^0.5
+#  Define a new sequence: the nth value is sqrt of the absolute value of {[the nth value in xVec] minus [the mean value of xVec]} where n=1,2,3,```,250.
+#  Print this new sequence.
+```
+e)
+```{r}
+sum(yVec>max(yVec)-200)
+#  Print the number of values in yVec which are within 200 of the maximum value of yVec. (That is sum the numbers of items whose value are > (maximun-200))
+
+```
+f)
+```{r}
+250-sum(xVec%%2)
+#  xVec%%2 picks out the values in xVec that are divisible by 2.
+#  sum(xVec%%2) is the number of values in xVec that are divisible by 2.
+#  Print the number of the number of values in xVec that are not divisible by 2.
+#  We use the way: the total number - the number of not divisible.
+```
+g)
+```{r}
+xVec[c(sort(yVec,index.return=T)$ix)]
+#  sort() return 2 vectors, the sorted result and each index of element when intex.return is True. Also you can use order() as well. $ix is pick the index part as we want, and xVex[c()] means that we read the correspongding value in xVec
+```
+h)
+```{r}
+yVec[seq(1,250,by=3)]
+#  Define a sequence between 1 to 250 (from 1 to 249) and each one differs 3.
+#  Print a new sequence based on yVec that the index position is the created sequence.
+```
+8
+```{r}
+n=c(1,2*(1:19))
+d=c(1+2*(0:19))
+sum(cumprod(n)/cumprod(d))
+# n is a vector that combines 1 and 2,4,6,8...38
+# d is a vector which is 1, 3, 5 ...39
+#cumprod returns a value which is cumultive products of each factor
+#cumprod(n) is each numerator of fraction, cumprod(d) is each denominator of fraction
+#So the cumprod(n)/cumprod(d) is each part of equation
+#sum each part of equation, we get the anwser
+```
+
+
