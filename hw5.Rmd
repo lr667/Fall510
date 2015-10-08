@@ -1,0 +1,99 @@
+---
+title: "HW_R"
+output: html_document
+---
+1. Figure out how to generically extract all numeric columns from any data frame so the method you develop can be used on any data.
+
+******
+doc head commends:
+    I use the is.numeric() function to determine each numeric column of "diamonds" and extract them to a new defined data frame my.df. Additionally, I give my.df the right column length of the ordered row name to make it easier to browse.
+******
+
+```{r}
+require(ggplot2)
+# download the ggplot2 package.
+data(diamonds) 
+# read data of diamonds
+my.df=diamonds[1]  # Define my.df as the first column of "diamonds" data frame.
+my.df=my.df[,-1]
+# Delete the column we just extract from "diamonds", so we can just get the "row name" column.---{1;2;3;4`````}
+for(i in (1:ncol(diamonds)))
+# read the ith column of "diamonds" one by one. 
+# i steps one by one from 1 to the the number of column of "diamonds".
+{
+if(is.numeric(diamonds[[i]]))
+  # Determine if the ith column od "diamonds" is numeruc column or not.
+  {
+  
+    my.df=cbind(my.df,diamonds[i])
+  # Bind my.df column and the ith column of "diamonds", and then assign the new data frame as my.df.
+  
+  }
+}
+str(my.df)
+# To see the result of my.df.
+
+
+```
+
+ 2. Create a data frame that contains each pair of variable names in the first column in a single string separated by a -, e.g. for the variables x and y, you should form the string ¡°x-y¡± (HINT: Look at the help provided for the paste function) and their corresponding Pearson correlation coefficient in the second column. (HINT: There is a function that calculates correlation coefficients ¨C look carefully at what is returned and optimize how you extract the correlation coefficients). Do not repeat any pairs.
+ 
+ ******
+ doc head commend:
+     In this solution, I use the combination function to print each pair of variable names and then calculate the correlation coefficient of them.
+ ******
+```{r}
+cor.coe=numeric(0)
+# Set the initial value of cor.coe
+for(i in 1:ncol(combn((1:ncol(my.df)),2)))
+  # (combn((1:ncol(my.df)),2)) is to produce combinations of every pair of variables in  the printed data frame "my.df"
+  # ncol(combn((1:ncol(my.df)),2)) is to count the number of pairs of variables as above.
+  # i steps one by one from 1 to the total number of pairs of variables.
+{
+cor.coe=c(cor.coe,cor(my.df[[combn((1:ncol(my.df)),2)[1,i]]],my.df[[combn((1:ncol(my.df)),2)[2,i]]]))
+# Calculate the correlation coefficient of every pair of the variables, and then put these values to the column "cor.coe"
+}
+n=paste(combn(colnames(my.df),2)[1,],'-',combn(colnames(my.df),2)[2,],sep='')
+ # define the first column--the corresponding variables of each corelation coefficient. And we give these names by paste them with a "-".
+r=data.frame(n,cor.coe)
+ # Creat a new data frame with the "n" column and the "cor.coe" column, say r.
+
+#sum((my.df$carat-mean(my.df$carat))*(my.df$table-mean(my.df$table)))/(53940*sqrt(var(my.df$table))*sqrt(var(my.df$carat)))--Just an example of caculus, ignore this is ok.
+
+r   
+ # Print r data frame.
+```
+3. Create and label a scatter plot for every pair of numeric variables. Add a title to the plot that contains the calculated Pearson correlation coefficient of variables contained in the plot. (HINT: You should figure out how to extract all numeric columns from a data frame so your method can be used on any data frame.)
+
+******
+This question, I will create and lable a scatter plot for each pair of variables by ggplot using the results in the 2 questions above.The thinking method is to print n graphs (n is the total number of pairs of variables), and give the details one by one as follows.
+******
+
+```{r}
+#use ggplot2
+for(i in 1:ncol(combn((1:ncol(my.df)),2)))
+# i steps one by one from 1 to the total number of pairs of variables. 
+{
+ggplot(my.df,aes(x=my.df[[combn((1:ncol(my.df)),2)[1,i]]], 
+  # Using the data frame of my.df.
+  # Use x-aes to record the valus of one of the ith pair of variables.
+                 y=my.df[[combn((1:ncol(my.df)),2)[2,i]]])) +
+  # Use y-aes to record the values of the other variable of the ith pair.
+    labs(x=combn(colnames(my.df),2)[1,i],y=combn(colnames(my.df),2)[2,i])+
+  # Label x-aes and y-aes with their corresponding name of the variables.
+    geom_point(shape=1) +    # Use hollow circles
+    geom_smooth(method=lm,   # Add linear regression line
+                se=FALSE)  +  # Don't add shaded confidence region
+    ggtitle(paste('correlation coefficient=',r[i,2]))
+  # Give the title of each graph as the question asks.
+  h=paste(i,'.png',sep='')
+  # Output the graph by png vertion and name the file "1.png", "2.png",```and so on.
+  ggsave(filename = h)      
+  # WARNING: This will save all the plots to your default path.
+  
+}
+
+
+
+```
+
