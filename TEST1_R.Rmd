@@ -1,0 +1,192 @@
+---
+title: "TEST1_R"
+author: "Li Ruan"
+---
+
+Question 1 
+
+The key point thinking is written at the first line of methods.
+```{r}
+#method 1, just keep the ratio unchanged, generate one same length vector of diamonds and add it to its column. But in this method, FALSE and TRUE will not be placed in order.
+
+data("mtcars")   
+# Read data of mtcars.
+require(ggplot2) 
+# download the ggplot2 package so that we can read teh diamonds data frame. (Because diamonds data is included in ggplot2.)
+data("diamonds")  # Read data of diamonds.
+
+diamonds$log <- c(rep(FALSE,round(nrow(diamonds)*(table(as.logical(mtcars$vs))/nrow(mtcars))[1])),rep(TRUE,round(nrow(diamonds)*(table(as.logical(mtcars$vs))/nrow(mtcars))[2])))
+# Create a new column named log in "diamonds" data.frame.
+# (as.logical(mtcars$vs)) means to translate 0, 1 to FALSE and TRUE respectively.
+# (table(as.logical(mtcars$vs))/nrow(mtcars)) means to calculate the ratio of FALSE and TRUE in (mtcars$vs).
+# nrow(diamonds) means to get the number of rows we need to generate.
+# so (nrow(diamonds)*(table(as.logical(mtcars$vs))/nrow(mtcars))[1]) is the numbers of FALSE we need.
+#and (nrow(diamonds)*(table(as.logical(mtcars$vs))/nrow(mtcars))[2]) is the numbers of TRUE we need.
+# I use rep() to generate FALSE and TRUE we need and use c() to combine them and add them to the new column "log" in the "diamonds".
+
+
+```
+
+```{r}
+#method 2, create a logical equivalent, extend it to the same length as diamonds and add it to diamonds data frame. This method will change the ratio a little bit, but will not change the order.
+tmp<-mtcars$vs 
+# Extract "vs" from "mtcars", save it in tmp.
+tmp2<-rep(0, nrow(diamonds))  
+# Generate 0 n times where n is the number of rows of "diamonds" 
+tmp2<-tmp2+tmp
+# Add tmp to tmp2, and because the length of tmp is much shorter than tmp2, so tmp will be duplicated a lot of times in tmp2.
+tmp2<-as.logical(tmp2)
+# Switch tmp2 to logical variable.
+diamonds$log2<-tmp2
+# Add tmp2 to the new column log2.
+
+
+```
+
+Question 2
+
+```{r}
+#method 1. Use loop to extract logical and factor vectors.
+ex.LF<-function(d)  
+# Assign ex.LF to the function().
+# d is a data.frame
+    {
+m=d[1]
+# Define m as the first column of "d" data frame.
+m=m[,-1]
+# Delete the column we just extract from "d", so we can just get the "row name" column of d.
+for(i in (1:ncol(d)))
+# read the ith column of "d" one by one. 
+# i steps one by one from 1 to the the number of column of "d".
+  {
+if(is.factor(d[[i]])||is.logical(d[[i]]))
+  # Determine if the ith column of "d" is logical or factor column.
+  {
+
+    m=cbind(m,d[i])
+     # Bind m column and the ith column of "d", and then assign the new data frame as m.
+    }
+  }
+  return(m)  # Return the new data.frame m.
+}
+my.df=ex.LF(diamonds)  # Try to test function ex.LF() by using "diamonds"
+str(my.df)        # Check the answer. (To see whether my.df is a factor or logical data.frame)
+```
+
+
+```{r}
+# method 2 more quickly than method 1 because it avoid using loop, but will rearrange the data so that the factor column will in front of logical column.
+ex.LF2<-function(d)  
+# Assign ex.LF2 to the function().
+# d is a data.frame
+  
+  {
+  m <- cbind(d[sapply(d,is.factor)], d[sapply(d,is.logical)])
+  # sapply(d,is.factor) returns the factor columns of "d"
+  # sapply(d,is.logical) returns the logical columns of "d"
+  # Extract factor columns and logical columns from "d" and then combine them and save to "m".
+  
+}
+my.df2<-ex.LF2(diamonds)   # Try to test function ex.LF2() by using "diamonds"
+str(my.df2)                # Check the answer. (To see whether my.df2 is a factor or logical data.frame)
+```
+
+Question 3
+
+```{r}
+#use the pervious solution to extract factor and logical columns to my.df.
+ex.LF<-function(d){
+m=d[1]
+m=m[,-1]
+for(i in (1:ncol(d))){
+if(is.factor(d[[i]])||is.logical(d[[i]])){
+  
+    m=cbind(m,d[i])
+    }
+  }
+  return(m)
+}
+my.df=ex.LF(diamonds)
+# It is same as Question2, so I avoid to type the same comments. 
+
+#use ggplot2
+p=list() # use a list to save ggplot result
+for(i in 1:ncol(my.df))
+# i steps one by one from 1 to the total number of variables in my.df. 
+  {
+   x=ggplot(my.df,aes(x=my.df[[i]])) +   # Use x-aes to record the value of the ith column.
+    geom_bar(fill="gray") +              # Draw a bar graph with gray bars
+    ggtitle(colnames(my.df)[i])+         # Give the title of each graph as the column names of my.df
+    labs(x=colnames(my.df)[i])           # Label x-aes in each graph as the column names of my.df
+   
+   h=paste(colnames(my.df)[i],'.png',sep='')
+   # Output the graph by png vertion and name the file as the column name.
+   ggsave(filename = h)  
+   p[[i]]=x
+    # Save pictures to list p and your default path.
+}
+#you can output each plot use following method.
+p[[2]]+geom_bar(fill="gray")
+
+
+
+
+
+
+
+
+#use default R plot
+
+layout(rbind(c(1,1,2),c(3,4,5))) #it depends on the plot you want draw.
+for(i in 1:ncol(my.df))
+  {
+  plot(as.factor(my.df[[i]]),col="gray")
+  # Translate "my.df" into factor data.frame.
+  # Plot it in gray (the bar color).
+}
+```
+
+
+Question 4
+
+```{r}
+
+g.list<-function(d)
+  # Assign g.list() to a new function(d) where d is a data.frame.
+  {
+  a<-list()
+ # Set the initial a as empty list. 
+  m <- cbind(d[sapply(d,is.factor)], d[sapply(d,is.logical)])
+ # sapply(d,is.factor) returns the factor columns of "d"
+ # sapply(d,is.logical) returns the logical columns of "d"
+ # Extract factor columns and logical columns from "d" and then combine them and save to "m".
+  
+  for(i in 1:ncol(m))
+    # Let i steps one by one to go through all the column of "m".
+    {
+    a[[i]]=table(m[[i]])
+    # Put these tables to one list a.
+  }
+  return(a)  # return the list a 
+}
+list1<-g.list(diamonds)
+# Try to test the function list() by "diamonds", and then save to list1.
+list1
+# print list1.
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
