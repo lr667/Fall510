@@ -5,7 +5,10 @@ author: "Li Ruan"
 
 Question 1 
 
+Add a logical column to diamonds based on the ratio of 1¡¯s and 0¡¯s in the mtcars$vs variable. The variable in mtcars is numeric meaning that you will need to create a logical equivalent, extend it to the same length as diamonds and add it to diamonds data frame.
+
 The key point thinking is written at the first line of methods.
+There are two methods.
 ```{r}
 #method 1, just keep the ratio unchanged, generate one same length vector of diamonds and add it to its column. But in this method, FALSE and TRUE will not be placed in order.
 
@@ -44,7 +47,9 @@ diamonds$log2<-tmp2
 ```
 
 Question 2
+Figure out how to generically extract all factor and logical columns from any data frame so the method you develop can be used on any data.
 
+There are two methods.
 ```{r}
 #method 1. Use loop to extract logical and factor vectors.
 ex.LF<-function(d)  
@@ -92,6 +97,11 @@ str(my.df2)                # Check the answer. (To see whether my.df2 is a facto
 ```
 
 Question 3
+Plot a gray bar graph for every factor and logical variable.
+use the pervious solution to extract factor and logical columns to my.df.
+use a list to save ggplot result
+
+There are two methods.
 
 ```{r}
 #use the pervious solution to extract factor and logical columns to my.df.
@@ -148,7 +158,7 @@ for(i in 1:ncol(my.df))
 
 
 Question 4
-
+Create a list of frequency tables that contains one table for each categorical and logical variable in the data frame.
 ```{r}
 
 g.list<-function(d)
