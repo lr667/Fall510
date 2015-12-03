@@ -338,7 +338,7 @@ data("diamonds")
 
 Question 9:
 
-As the sample size increase, the distribution will approach the original distribution, and the accuracy will also increse. We can see it clearly from question 1 and 2. And then we find that if we choose so mnay samples like 1000 (in question 3), we will get a more accurate mean of that sample size but it is also a little different if we choose the different sample size : the more samples we choose, the distribution of the means will be more approach the normal distibution. That is what we call centre limit theorem. And the standard deviation will be smaller as well which makes the bell shape of normal distribution "thinner".
+As the sample size increase, the distribution will approach the original distribution, and the accuracy will also increse. We can see it clearly from question 1 and 2. And then we find that if we choose so mnay samples like 1000 (in question 3), we will get a more accurate mean of that sample size but it is also a little different if we choose the different sample size : the more samples we choose, the distribution of the means will be more approach the normal distibution. That is what we call Centre Limit Theorem. And the standard deviation will be smaller as well which makes the bell shape of normal distribution "thinner".
 
 Therefore, we now have 2 methods to make our estimated mean closer to the accurate mean:
  1, to have as large sample as we can.
