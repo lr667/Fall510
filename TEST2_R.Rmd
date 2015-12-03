@@ -1,0 +1,347 @@
+---
+title: "TEST2_R"
+output: html_document
+---
+
+```{r}
+abalone <- read.csv("http://archive.ics.uci.edu/ml/machine-learning-databases/abalone/abalone.data", 
+                    header = FALSE)
+# Read and download the data from this website address.
+names(abalone) <- c("sex", "length", "diameter", "height", "weight.whole", "weight.shucked", 
+                    "weight.viscera", "weight.shell", "rings")
+# Name every column of the data frame as the question asked: "sex", "length", "diameter", "height", "weight.whole", "weight.shucked", "weight.viscera", "weight.shell", "rings"
+```
+
+Question 1
+
+```{r}
+a=abalone$weight.whole 
+# Extract the weight.whole column and let a represent it.
+x=c(0.01,0.1,0.25,0.5,0.8,1)
+# Define x as a vector : (0.01,0.1,0.25,0.5,0.8,1) which each element in it is a sample size.
+
+mysmp<-function(d,x){ 
+# In order to complete question 1, I define a function mysmp( ) where d is the input data and x is the sample size vector.
+  s1=matrix(, nrow = 4, ncol = 0)
+# Create a new matrix s1 which now have 4 rows and no column, I will add column then.
+  for(i in x){ 
+# Let i loops through all numbers in vector x where i will be each sample size one by one.
+  s = d[sample(length(d), length(d)*i)]
+# When the sample size is i, choose length(d)*i numbers randomly from 1 to length(d). And then choose the correspongding data in d and put them in s. That is to say, we choose a sample size i of the data d randomly and name the new sample data as "s" at that time.
+  s1=cbind(s1,c(min(s),max(s),mean(s),var(s)))
+# We calculate the min, max, mean and variance of data s and then combine them with s1 as a new data column. As i loops through 6 numbers, we create 6 new data columns. Thus s1 becomes a matrix with 4 rows and 6 columns.
+  }
+  r=data.frame(s1) 
+# transform matrix s1 to data frame r.
+  row.names(r) <- c("SampleMin", "SampleMax", "SampleMean", "SampleVar")
+# Give each row of data frame r the names respectively : "SampleMin", "SampleMax", "SampleMean", "SampleVar"
+  names(r)<-x
+# Let the numbers in x be the column names of data frame r respectively.
+  return(r)
+}
+
+df=mysmp(a,x) 
+# In this question, then I can use function mysmp( ) to easily get the required data frame df where a is the original population, x is the sample size vector.
+
+
+```
+
+Question 2
+
+```{r}
+library(ggplot2)
+# Read ggplot2 package.
+myplot<-function(d,x){
+# In this question, I also define a new function myplot( ), to help create the histogram.
+    library(grid)
+# Read grid from library.
+    grid.newpage()
+# Create a new grid page.
+    pushViewport(viewport(layout = grid.layout(2,3)))
+# Give the view version that we can view our histograms in 2 rows and 3 columns in order to make it more easier and more beautiful to view.
+    i1=1   # Set the initial value of i1 is 1.
+    j1=1   # Set the initial value of j1 is 1.
+  for(i in x){
+# Let i loops through all numbers in vector x where i will be each sample size one by one.
+  s = d[sample(length(d), length(d)*i)]
+# When the sample size is i, choose length(d)*i numbers randomly from 1 to length(d). And then choose the correspongding data in d and put them in s. That is to say, we choose a sample size i of the data d randomly and name the new sample data as "s" at that time.
+  r=data.frame(s)
+# transform matrix s to data frame r.
+  hist <- ggplot(r,aes(x=s))
+#  Define a ggplot by using the data frame r and x-axis represent the sample s.
+  hist <- hist + 
+  geom_histogram()   # Graph the histogram.
+
+      print(hist, vp = viewport(layout.pos.row = i1,layout.pos.col = j1))
+    j1=j1+1
+    if(j1==4){
+      i1=2
+      j1=1
+    }
+# I place the histograms one by one. First place the first three in the 1st row (which is about sample size 0.01, 0.1, 0.25) one by one, and then place the last three in the 2nd row (which is about sample size 0.5, 0.8, 1.0) one by one.
+  
+}
+}
+myplot(a,x)
+# In this question, I use my function myplot( ) to easily get the required histograms where a is the original population, x is the sample size vector.
+
+
+
+ 
+```
+
+Question 3
+
+```{r}
+mysmp2<-function(d,x){
+# I define a new function mysmp2( ) to create the required data frame and d is the input data and x is the sample size vector as question 1.
+  s1=matrix(, nrow = 1000, ncol = 0)
+# Create a new matrix s1 which now have 1000 rows and no column, I will add column then.
+  for(i in x){
+# Let i loops through all numbers in vector x where i will be each sample size one by one.
+      s2=numeric(0)
+# define a new variable which is null now.
+    for(j in 1:1000){  # as j loops through 1 to 1000.
+      s = d[sample(length(d), length(d)*i)]
+# When the sample size is i, choose length(d)*i numbers randomly from 1 to length(d). And then choose the correspongding data in d and put them in s. That is to say, we choose a sample size i of the data d randomly and name the new sample data as "s" at that time.
+      s2=c(s2,mean(s))
+# Add the mean of data s to s2. So as j go to 1000, s2 becomes a column with 1000 numbers.
+    }
+    s1=cbind(s1,s2) 
+# Combine the matrix s1 with the column s2 since they both have 1000 rows. As i loops through the numbers in vector x, we will get a new data frame with n columns where n is the number of elements in vector x.
+  }
+  r=data.frame(s1) 
+# transform matrix s1 to data frame r.
+  names(r)<-x
+# Let the numbers in x be the column names of data frame r respectively.
+  return(r)
+}
+x=c(0.01,0.1,0.25,0.5,0.8) # I delete the sample size 100% in vector x because that is very non-sense.
+df2=mysmp2(a,x)
+# In this question, I use my function mysmp2( ) to easily get the required data frame df2.
+
+```
+
+Question 4
+
+```{r}
+
+myplot2<-function(a,d,x){
+# I define a new function which is similar to myplot( ) because the input data is a little different from that one. But basicly, it is has the same fundamental thought.
+  ma=max(a)  # Let ma be the maximum of data a.
+  mi=min(a)  # Let ma be the minimum of data a.
+    library(grid)
+# Read grid from library.
+    grid.newpage()
+# Create a new grid page.
+    pushViewport(viewport(layout = grid.layout(2,3)))
+# Give the view version that we can view our histograms in 2 rows and 3 columns in order to make it more easier and more beautiful to view.
+    i1=1   # Set the initial value of i1 is 1.
+    j1=1   # Set the initial value of j1 is 1.
+
+  for(i in 1:length(x)){
+# Let i loops through 1 to the length of x. 
+  s = d[[i]]  # Let s be the ith column of d.
+  r=data.frame(s)
+# transform matrix s to data frame r.
+  hist <- ggplot(r,aes(x=s))
+#  Define a ggplot by using the data frame r and x-axis represent the sample s.
+  hist <- hist + 
+  geom_histogram()+    # Graph the histogram.
+  scale_x_continuous(limits=c(mi, ma))
+# Give the range of x-axis which covers the min and the max of data a.
+  print(hist, vp = viewport(layout.pos.row = i1,layout.pos.col = j1))
+  j1=j1+1
+    if(j1==4){
+      i1=2
+      j1=1
+    }
+  }
+# I place the histograms one by one. First place the first three in the 1st row (which is about sample size 0.01, 0.1, 0.25) one by one, and then place the 4th and 5th in the 2nd row (which is about sample size 0.5, 0.8) one by one.
+    r=data.frame(a)
+  hist <- ggplot(r,aes(x=a))
+    hist <- hist + 
+    geom_histogram()
+    print(hist, vp = viewport(layout.pos.row = 2,layout.pos.col = 3))
+}
+# In similarly, it is the same step as above so I don't copy the same comments again. In this step, I use the original data a which represent the sample size 1 to graph a grid of histogram and place it at the end of the view version. (2nd row, 3rd column)
+myplot2(a,df2,x)
+# In this question, I use my function myplot2( ) to easily get the required histogram where x is the inputed vector in question 3 and df2 is the answer in queston 3, and a is the original population.
+
+ 
+```
+
+Question 5
+
+```{r}
+  ResampleMin=c(min(df2[[1]]),min(df2[[2]]),min(df2[[3]]),min(df2[[4]]),min(df2[[5]]),min(a))
+# Define a new vector named ResampleMin which contain the min of the each column of df2 (the data frame in question 3).
+  ResampleMax=c(max(df2[[1]]),max(df2[[2]]),max(df2[[3]]),max(df2[[4]]),max(df2[[5]]),max(a))
+# Define a new vector named ResampleMax which contain the max of the each column of df2 (the data frame in question 3).
+  ResampleMean=c(mean(df2[[1]]),mean(df2[[2]]),mean(df2[[3]]),mean(df2[[4]]),mean(df2[[5]]),mean(a))
+# Define a new vector named ResampleMean which contain the mean of the each column of df2 (the data frame in question 3).
+  ResampleVar=c(var(df2[[1]]),var(df2[[2]]),var(df2[[3]]),var(df2[[4]]),var(df2[[5]]),var(a))
+# Define a new vector named ResampleVar which contain the variance of the each column of df2 (the data frame in question 3).
+ df=rbind(df,ResampleMin,ResampleMax,ResampleMean,ResampleVar) 
+# combine df in question 1 with these new rows : ResampleMin,ResampleMax,ResampleMean,ResampleVar.
+ row.names(df) <- c("SampleMin", "SampleMax", "SampleMean", "SampleVar","ResampleMin","ResampleMax","ResampleMean","ResampleVar")
+# Give each row of data frame df the names respectively : "SampleMin", "SampleMax", "SampleMean", "SampleVar","ResampleMin","ResampleMax","ResampleMean","ResampleVar".
+```
+
+Question 6
+
+```{r}
+myplot3<-function(a,df){
+# Define a new function myplot3( ) to help graph the histogram of the 100% data and the label lines represent the 1%, 10%, 25%, 50%, and 80% SampleMean.
+  r=data.frame(a)
+# transform matrix s1 to data frame r.
+ hist <- ggplot(r,aes(x=a))
+#  Define a ggplot by using the data frame r and x-axis represent the sample s.
+  hist <- hist +  
+  geom_histogram()+        # Graph the histogram.
+    scale_x_continuous(limits=c(min(a), max(a)))+ 
+# Give the range of x-axis which covers the min and the max of data a.
+    geom_vline(xintercept=df[[1]][3], colour='blue') +
+# lable the line that represent the 1% SampleMean in blue 
+  annotate("text",x=df[[1]][3],y=10,label='1%',hjust=0,color='red')+
+# Text "1%" in red near the blue line which represent the 1% SampleMean.
+    geom_vline(xintercept=df[[2]][3], colour='blue') +
+# lable the line that represent the 10% SampleMean in blue 
+  annotate("text",x=df[[2]][3],y=10,label='10%',hjust=0,color='red')+
+# Text "10%" in red near the blue line which represent the 10% SampleMean.
+    geom_vline(xintercept=df[[3]][3], colour='blue') +
+# lable the line that represent the 25% SampleMean in blue 
+  annotate("text",x=df[[3]][3],y=10,label='25%',hjust=0,color='red')+
+# Text "25%" in red near the blue line which represent the 25% SampleMean.
+    geom_vline(xintercept=df[[4]][3], colour='blue') +
+# lable the line that represent the 50% SampleMean in blue 
+  annotate("text",x=df[[4]][3],y=10,label='50%',hjust=0,color='red')+
+# Text "50%" in red near the blue line which represent the 50% SampleMean.
+    geom_vline(xintercept=df[[5]][3], colour='blue') +
+# lable the line that represent the 80% SampleMean in blue 
+  annotate("text",x=df[[5]][3],y=10,label='80%',hjust=0,color='red')
+# Text "80%" in red near the blue line which represent the 80% SampleMean.
+  print(hist)
+}
+ myplot3(a,df)
+# In this question, I use my function myplot3( ) to easily get the required histogram.
+```
+
+Question 7
+
+```{r}
+ myplot4<-function(a,df){
+# Define a new function myplot4( ) to help graph the histogram of the 100% data and the label lines represent the 1%, 10%, 25%, 50%, and 80% ResampleMean.
+  r=data.frame(a)
+# transform matrix s1 to data frame r.
+  hist2 <- ggplot(r,aes(x=a))
+#  Define a ggplot by using the data frame r and x-axis represent the sample s.
+  hist2 <- hist2 + 
+  geom_histogram()+        # Graph the histogram.
+    scale_x_continuous(limits=c(min(a), max(a)))+
+# Give the range of x-axis which covers the min and the max of data a.
+    geom_vline(xintercept=df[[1]][7], colour='blue') +
+# lable the line that represent the 1% ReampleMean in blue 
+  annotate("text",x=df[[1]][7],y=10,label='1%',hjust=0,color='red')+
+# Text "1%" in red near the blue line which represent the 1% ResampleMean.
+    geom_vline(xintercept=df[[2]][7], colour='blue') +
+# lable the line that represent the 10% ReampleMean in blue
+  annotate("text",x=df[[2]][7],y=10,label='10%',hjust=0,color='red')+
+# Text "10%" in red near the blue line which represent the 10% ResampleMean.
+    geom_vline(xintercept=df[[3]][7], colour='blue') +
+# lable the line that represent the 25% ReampleMean in blue
+  annotate("text",x=df[[3]][7],y=10,label='25%',hjust=0,color='red')+
+# Text "25%" in red near the blue line which represent the 25% ResampleMean.
+    geom_vline(xintercept=df[[4]][7], colour='blue') +
+# lable the line that represent the 50% ReampleMean in blue
+  annotate("text",x=df[[4]][7],y=10,label='50%',hjust=0,color='red')+
+# Text "50%" in red near the blue line which represent the 50% ResampleMean.
+    geom_vline(xintercept=df[[5]][7], colour='blue') +
+# lable the line that represent the 80% ReampleMean in blue
+  annotate("text",x=df[[5]][7],y=10,label='80%',hjust=0,color='red')
+# Text "80%" in red near the blue line which represent the 80% ResampleMean.
+  print(hist2)
+ }
+  myplot4(a,df)
+# In this question, I use my function myplot4( ) to easily get the required histogram.
+```
+
+Question 8 
+
+```{r}
+  
+data("diamonds") 
+# Read data "diamonds".
+  x=c(0.01,0.1,0.25,0.5,0.8,1)
+  a=diamonds$carat
+  df=mysmp(a,x)
+  myplot(a,x)
+  x=c(0.01,0.1,0.25,0.5,0.8)
+  df2=mysmp2(a,x)
+  
+  myplot2(a,df2,x)
+  
+  
+    ResampleMin=c(min(df2[[1]]),min(df2[[2]]),min(df2[[3]]),min(df2[[4]]),min(df2[[5]]),min(a))
+  ResampleMax=c(max(df2[[1]]),max(df2[[2]]),max(df2[[3]]),max(df2[[4]]),max(df2[[5]]),max(a))
+  ResampleMean=c(mean(df2[[1]]),mean(df2[[2]]),mean(df2[[3]]),mean(df2[[4]]),mean(df2[[5]]),mean(a))
+  ResampleVar=c(var(df2[[1]]),var(df2[[2]]),var(df2[[3]]),var(df2[[4]]),var(df2[[5]]),var(a))
+ df=rbind(df,ResampleMin,ResampleMax,ResampleMean,ResampleVar) 
+ row.names(df) <- c("SampleMin", "SampleMax", "SampleMean", "SampleVar","ResampleMin","ResampleMax","ResampleMean","ResampleVar")
+  
+ 
+  myplot3(a,df)
+  myplot4(a,df)
+  
+  # In this question, I use data diamonds$carat as my data a, and sample size vector x is also (0.01,0.1,0.25,0.5,0.8,1). And then I use functions mysmp( ), myplot( ) to get a 4*6 data frame and histograms. 
+  # Let x= (0.01,0.1,0.25,0.5,0.8) and use function mysmp2( ) to get five means of each columns of 1000 samples.
+  # Then I combine df with these new rows : ResampleMin,ResampleMax,ResampleMean,ResampleVar and then name them.
+  # At last, I use functions myplot3( ) and myplot4( ) to execute it.
+  
+  
+```
+
+```{r}
+  data("faithful")
+# Read data "diamonds".
+  x=c(0.01,0.1,0.25,0.5,0.8,1)
+  a=faithful$eruptions
+  df=mysmp(a,x)
+  myplot(a,x)
+  x=c(0.01,0.1,0.25,0.5,0.8)
+  df2=mysmp2(a,x)
+  
+  myplot2(a,df2,x)
+  
+  
+  
+    ResampleMin=c(min(df2[[1]]),min(df2[[2]]),min(df2[[3]]),min(df2[[4]]),min(df2[[5]]),min(a))
+  ResampleMax=c(max(df2[[1]]),max(df2[[2]]),max(df2[[3]]),max(df2[[4]]),max(df2[[5]]),max(a))
+  ResampleMean=c(mean(df2[[1]]),mean(df2[[2]]),mean(df2[[3]]),mean(df2[[4]]),mean(df2[[5]]),mean(a))
+  ResampleVar=c(var(df2[[1]]),var(df2[[2]]),var(df2[[3]]),var(df2[[4]]),var(df2[[5]]),var(a))
+ df=rbind(df,ResampleMin,ResampleMax,ResampleMean,ResampleVar) 
+ row.names(df) <- c("SampleMin", "SampleMax", "SampleMean", "SampleVar","ResampleMin","ResampleMax","ResampleMean","ResampleVar")
+  
+ 
+ 
+ 
+  myplot3(a,df)
+  myplot4(a,df)
+  
+   # In this question, I use data faithful$eruptions as my data a, and sample size vector x is also (0.01,0.1,0.25,0.5,0.8,1). And then I use functions mysmp( ), myplot( ) to get a 4*6 data frame and histograms. 
+  # Let x= (0.01,0.1,0.25,0.5,0.8) and use function mysmp2( ) to get five means of each columns of 1000 samples.
+  # Then I combine df with these new rows : ResampleMin,ResampleMax,ResampleMean,ResampleVar and then name them.
+  # At last, I use functions myplot3( ) and myplot4( ) to execute it.
+  
+
+```
+
+Question 9:
+
+As the sample size increase, the distribution will approach the original distribution, and the accuracy will also increse. We can see it clearly from question 1 and 2. And then we find that if we choose so mnay samples like 1000 (in question 3), we will get a more accurate mean of that sample size but it is also a little different if we choose the different sample size : the more samples we choose, the distribution of the means will be more approach the normal distibution. That is what we call centre limit theorem. And the standard deviation will be smaller as well which makes the bell shape of normal distribution "thinner".
+
+Therefore, we now have 2 methods to make our estimated mean closer to the accurate mean:
+ 1, to have as large sample as we can.
+ 2, to have a great amount of small samples.
+ 
+That is what I learned from this test.
