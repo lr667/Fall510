@@ -2,6 +2,8 @@
 title: "HW_R"
 output: html_document
 ---
+SW: nice job.
+
 1. Figure out how to generically extract all numeric columns from any data frame so the method you develop can be used on any data.
 
 ******
@@ -36,7 +38,7 @@ str(my.df)
 
 ```
 
- 2. Create a data frame that contains each pair of variable names in the first column in a single string separated by a -, e.g. for the variables x and y, you should form the string ¡°x-y¡± (HINT: Look at the help provided for the paste function) and their corresponding Pearson correlation coefficient in the second column. (HINT: There is a function that calculates correlation coefficients ¨C look carefully at what is returned and optimize how you extract the correlation coefficients). Do not repeat any pairs.
+ 2. Create a data frame that contains each pair of variable names in the first column in a single string separated by a -, e.g. for the variables x and y, you should form the string ??x-y?? (HINT: Look at the help provided for the paste function) and their corresponding Pearson correlation coefficient in the second column. (HINT: There is a function that calculates correlation coefficients ?C look carefully at what is returned and optimize how you extract the correlation coefficients). Do not repeat any pairs.
  
  ******
  doc head commend:
@@ -70,11 +72,12 @@ This question, I will create and lable a scatter plot for each pair of variables
 ******
 
 ```{r}
+# SW: below modified to show images in output vs saving them
 #use ggplot2
 for(i in 1:ncol(combn((1:ncol(my.df)),2)))
 # i steps one by one from 1 to the total number of pairs of variables. 
 {
-ggplot(my.df,aes(x=my.df[[combn((1:ncol(my.df)),2)[1,i]]], 
+g <- ggplot(my.df,aes(x=my.df[[combn((1:ncol(my.df)),2)[1,i]]], 
   # Using the data frame of my.df.
   # Use x-aes to record the valus of one of the ith pair of variables.
                  y=my.df[[combn((1:ncol(my.df)),2)[2,i]]])) +
@@ -88,7 +91,8 @@ ggplot(my.df,aes(x=my.df[[combn((1:ncol(my.df)),2)[1,i]]],
   # Give the title of each graph as the question asks.
   h=paste(i,'.png',sep='')
   # Output the graph by png vertion and name the file "1.png", "2.png",```and so on.
-  ggsave(filename = h)      
+  #ggsave(filename = h)      
+  print(g)
   # WARNING: This will save all the plots to your default path.
   
 }
