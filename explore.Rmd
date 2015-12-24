@@ -2,6 +2,9 @@
 title: "HW6"
 author: "Li Ruan"
 ---
+
+SW: i've modified your code to plot the histograms to the screen rather than saving them; that was the intent of the assignment. your output is hard to read, you're dropping labels from the summary statistics, so it's not clear which is which. you should also label the correlation coefficient and r-squared values (vs tmp or tmp2). finally, you need to consider the absolute value of the correlation coefficient; currently, you are considering positive values only.
+
 ******
 1) Plot a pair of blue histograms with a vertical red line at the mean (one using counts and the other density) for every numerical variable at each bin size specified in the bin sizes input parameter. You can plot individually or as a grid. If you chose to plot as a grid, there should be separate grids for each count-bin size combination and separate grids for each density-bin size combination. For example, given 5 numeric variables and a vector of three bin sizes will generate 30 individual plots or a total of 6 grid plots (with each grid plot containing 5 subplots).
 2) Plot a gray bar graph for every categorical and binary variable.
@@ -50,6 +53,8 @@ explore<-function(dt,bnsz,thd)
     if(vn[[j]]==1){      # if vn[j] is numeric
     m=mean(dt[[j]])      # we let m to be the mean of jth column of dt.
     ml = sprintf("$%3.2f ", m)    # m1 is a version of m round to two decimals.
+    # SW: you are printing a dollar sign ($), that's not right
+    
     bins <- (max(dt[,j])-min(dt[,j]))/bnsz[i]  
     # bnsz[i] : the number of bins at each i.
     # (max(dt[,j])-min(dt[,j]))/bnsz[i] is the width of each bin. 
@@ -70,7 +75,8 @@ explore<-function(dt,bnsz,thd)
         nm=paste('bin=',bnsz[i],colnames(dt)[j],"count.png")
         # Output the graph by png vertion and name the file as the binsize and column name. (use nm to record)
         # For example, "bin= 20 z count.png"
-    ggsave(filename = nm)
+    #ggsave(filename = nm)
+        print(h)
         # Save the filmname.
     
     
@@ -88,7 +94,8 @@ explore<-function(dt,bnsz,thd)
       nm=paste('bin=',bnsz[i],colnames(dt)[j],"denstity.png")
       # Output the graph by png vertion and name the file as the binsize and column name. (use nm to record)
       # For example, "bin= 20 z density.png"
-    ggsave(filename = nm)       # Save the filename.
+    #ggsave(filename = nm)       # Save the filename.
+      print(h2)
     }
     
   } 
@@ -105,7 +112,7 @@ explore<-function(dt,bnsz,thd)
         # Then we can have the ith column of dt is binary.
         xLabel <- colnames(dt)[i]
          # lable x-axis with the name of the ith column name of dt 
-        ggplot(dt,aes_string(xLabel)) +
+        g <- ggplot(dt,aes_string(xLabel)) +
           # read the data of the vector named xLabel in dt and use these data to ggplot.
           geom_bar(fill="gray") +      # Draw a bar graph with gray bars
           ggtitle(colnames(dt)[i])+    # Give the title of each graph as the ith column names of dt.
@@ -113,7 +120,8 @@ explore<-function(dt,bnsz,thd)
           nm=paste(colnames(dt)[i],'.png',sep='')
           # Output the graph by png vertion and name the file as the ith column name of dt.
           # For example, "clarity.png"
-          ggsave(filename = nm) 
+          #ggsave(filename = nm) 
+          print(g)
           # Save the filename.
           
           
@@ -148,7 +156,7 @@ explore<-function(dt,bnsz,thd)
     if(vc[[i]]>=1){
       # Use the vc we get in last question, if a data in dt corresponding to vn[i] is not both non-factor and non-ligical,
       xLabel <- colnames(dt)[i]        # lable x-axis with the name of the ith column name of dt 
-    ggplot(dt,aes_string(xLabel)) +    
+    g <- ggplot(dt,aes_string(xLabel)) +    
     # read the data of the vector named xLabel in dt and use these data to ggplot.
     geom_bar(fill="gray") +          # Draw a bar graph with gray bars
     ggtitle(colnames(dt)[i])+        # Give the title of each graph as the ith column names of dt.
@@ -156,7 +164,8 @@ explore<-function(dt,bnsz,thd)
     nm=paste(colnames(dt)[i],'.png',sep='')
     # Output the graph by png vertion and name the file as the ith column name of dt.
     # For example, "clarity.png"
-    ggsave(filename = nm)  
+    #ggsave(filename = nm)  
+    print(g)
     # Save the filename.
     
     
